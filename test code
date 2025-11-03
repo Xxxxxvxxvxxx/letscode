@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Example Webpage — Clean, Responsive, and Interactive</title>
+  <meta name="description" content="A simple, modern example webpage demonstrating clean HTML, responsive CSS, and light interactivity." />
+
+  <style>
+    :root {
+      --bg: #0f1115;
+      --card: #151922;
+      --text: #e6eaf2;
+      --muted: #9aa3b2;
+      --accent: #6aa8ff;
+      --accent-2: #a06cff;
+      --border: #243049;
+      --success: #45c486;
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+      --radius: 14px;
+    }
+
+    html, body {
+      height: 100%;
+      background: radial-gradient(1200px 600px at 10% 10%, #111522 0%, var(--bg) 50%) no-repeat,
+                  radial-gradient(800px 400px at 90% 10%, #0f1430 0%, var(--bg) 60%) no-repeat,
+                  var(--bg);
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Layout */
+    .site {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-height: 100dvh;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: saturate(1.2) blur(6px);
+      background: color-mix(in oklab, var(--bg) 92%, #0b0e14);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      padding: 14px 20px;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    .brand .logo {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 6px 18px rgba(106,168,255,0.35);
+    }
+
+    .nav ul {
+      display: flex;
+      gap: 18px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .nav a {
+      color: var(--muted);
+      text-decoration: none;
+      padding: 8px 10px;
+      border-radius: 8px;
+      transition: color .2s ease, background .2s ease;
+    }
+    .nav a:hover {
+      color: var(--text);
+      background: #1a2130;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+      display: grid;
+      gap: 24px;
+    }
+
+    /* Hero */
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .hero-card {
+      background: linear-gradient(180deg, #171d2a 0%, var(--card) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px;
+    }
+
+    .kicker {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 14px;
+      letter-spacing: 0.4px;
+      margin-bottom: 10px;
+    }
+    .kicker .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent), transparent 85%);
+    }
+
+    h1 {
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.15;
+      margin: 8px 0 14px;
+      letter-spacing: -0.5px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 64ch;
+    }
+
+    .cta {
+      display: flex;
+      gap: 12px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #1b2233;
+      color: var(--text);
+      text-decoration: none;
+      transition: transform .08s ease, box-shadow .2s ease, background .2s ease;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+      will-change: transform;
+    }
+    .btn:hover { background: #202a40; }
+    .btn:active { transform: translateY(1px); }
+    .btn.primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border: none;
+      box-shadow: 0 10px 25px rgba(106,168,255,0.45);
+    }
+
+    .preview {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: #101725;
+      min-height: 280px;
+    }
+
+    /* Watermark overlay (static example) */
+    .wm {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      display: grid;
+      place-items: center;
+      opacity: 0.12;
+      user-select: none;
+      mix-blend-mode: lighten;
+    }
+    .wm span {
+      font-size: clamp(18px, 9vw, 72px);
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #d7e3ff;
+      transform: rotate(-18deg);
+      text-shadow: 0 2px 18px rgba(160,108,255,0.25);
+    }
+
+    /* Cards */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+    .card h3 {
+      margin: 6px 0 8px;
+      font-size: 18px;
+      letter-spacing: -0.2px;
+    }
+    .card p {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    /* Tools section */
+    .tool {
+      background: linear-gradient(180deg, #171d2a 0%, var(--card) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+    }
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+    .field label {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .field input, .field textarea {
+      background: #0e1524;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font: inherit;
+    }
+
+    .mini {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .copy {
+      justify-self: start;
+      cursor: pointer;
+      background: #182036;
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 8px 10px;
+      transition: background .2s ease, transform .08s ease;
+    }
+    .copy:hover { background: #1c2742; }
+    .copy:active { transform: translateY(1px); }
+
+    footer {
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      padding: 18px 20px;
+      display: grid;
+      place-items: center;
+      background: color-mix(in oklab, var(--bg) 92%, #0b0e14);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 560px) {
+      .nav { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: 1fr; }
+      .btn { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="site">
+    <header>
+      <nav class="nav" aria-label="Primary">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <span>Example</span>
+        </div>
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#tools">Tools</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero hero-card" aria-labelledby="hero-title">
+        <div>
+          <div class="kicker"><span class="dot" aria-hidden="true"></span><span>Clean starter</span></div>
+          <h1 id="hero-title">A polished, responsive example webpage</h1>
+          <p>Built with semantic HTML, modern CSS, and a touch of interactivity. Copy-ready and easy to adapt for your next project.</p>
+          <div class="cta">
+            <a class="btn primary" href="#tools">Try the tool</a>
+            <a class="btn" href="#features">See features</a>
+          </div>
+        </div>
+
+        <div class="preview" role="img" aria-label="Gradient preview with watermark">
+          <svg viewBox="0 0 600 320" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <defs>
+              <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+                <stop offset="0%" stop-color="#6aa8ff" />
+                <stop offset="100%" stop-color="#a06cff" />
+              </linearGradient>
+            </defs>
+            <rect width="100%" height="100%" fill="#0f1628"></rect>
+            <circle cx="120" cy="110" r="90" fill="url(#g)" opacity="0.35"></circle>
+            <circle cx="480" cy="220" r="120" fill="url(#g)" opacity="0.25"></circle>
+            <rect x="190" y="100" width="220" height="120" rx="18" fill="#10182b" stroke="#243049" />
+            <text x="300" y="165" text-anchor="middle" font-size="22" font-family="monospace" fill="#cfe0ff">Hello, world.</text>
+          </svg>
+          <div class="wm"><span>EXAMPLE</span></div>
+        </div>
+      </section>
+
+      <section id="features" aria-labelledby="features-title">
+        <h2 id="features-title">Features</h2>
+        <div class="grid">
+          <article class="card">
+            <h3>Semantic structure</h3>
+            <p>Uses header, main, section, and footer for clarity and accessibility.</p>
+          </article>
+          <article class="card">
+            <h3>Responsive design</h3>
+            <p>Fluid typography, grid layout, and mobile-first media queries for comfort across devices.</p>
+          </article>
+          <article class="card">
+            <h3>Subtle polish</h3>
+            <p>Soft shadows, gradients, and gentle motion that keep the focus on content.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="tools" class="tool" aria-labelledby="tools-title">
+        <h2 id="tools-title">Mini tool: copy text</h2>
+        <div class="field">
+          <label for="input-text">Your text</label>
+          <textarea id="input-text" rows="4" placeholder="Type something worth copying...">The quick brown fox jumps over the lazy dog.</textarea>
+        </div>
+        <button class="copy" id="copy-btn" type="button" aria-live="polite">Copy to clipboard</button>
+        <span class="mini" id="copy-status" aria-live="polite">Status: Ready</span>
+      </section>
+
+      <section id="contact" aria-labelledby="contact-title">
+        <h2 id="contact-title">Contact</h2>
+        <div class="card">
+          <p>Questions or ideas? Replace this section with your own form or links.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <small>&copy; <span id="year"></span> Example. All rights reserved.</small>
+    </footer>
+  </div>
+
+  <script>
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Copy tool
+    const btn = document.getElementById('copy-btn');
+    const field = document.getElementById('input-text');
+    const status = document.getElementById('copy-status');
+
+    btn.addEventListener('click', async () => {
+      const text = field.value.trim();
+      if (!text) {
+        status.textContent = 'Status: Nothing to copy';
+        status.style.color = '#e6b35f';
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(text);
+        status.textContent = 'Status: Copied';
+        status.style.color = getComputedStyle(document.documentElement).getPropertyValue('--success').trim();
+        btn.textContent = 'Copied!';
+        btn.disabled = true;
+        setTimeout(() => {
+          btn.textContent = 'Copy to clipboard';
+          btn.disabled = false;
+          status.textContent = 'Status: Ready';
+          status.style.color = '';
+        }, 1500);
+      } catch (err) {
+        status.textContent = 'Status: Copy failed';
+        status.style.color = '#ff7b7b';
+      }
+    });
+  </script>
+</body>
+</html>
