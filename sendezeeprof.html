@@ -15,91 +15,42 @@
       justify-content: center;
       min-height: 100vh;
     }
-
-    h1 {
-      color: #333;
-      font-size: 2.4em;
-      margin-bottom: 20px;
-      animation: fadeIn 1s ease-out;
-    }
-
     .uploader {
       background: #fff;
       padding: 40px 30px;
       border-radius: 20px;
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
       text-align: center;
-      animation: slideUp 1s ease-out;
-    }
-
-    .file-input-container {
-      position: relative;
-      display: inline-block;
-    }
-
-    .file-input-container input[type="file"] {
-      opacity: 0;
+      max-width: 400px;
       width: 100%;
-      height: 100%;
-      position: absolute;
-      left: 0;
-      top: 0;
-      cursor: pointer;
     }
-
+    .file-input-container { position: relative; display: inline-block; }
+    .file-input-container input[type="file"] {
+      opacity: 0; width: 100%; height: 100%; position: absolute; left: 0; top: 0; cursor: pointer;
+    }
     .file-label {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 14px 28px;
-      font-size: 16px;
-      font-weight: 600;
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 14px 28px; font-size: 16px; font-weight: 600;
       background: linear-gradient(135deg, #7f53ac, #647dee);
-      color: white;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      color: white; border-radius: 10px; cursor: pointer;
+      transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       min-width: 180px;
     }
-
-    .file-label:hover {
-      background: linear-gradient(135deg, #5e35b1, #5c6bc0);
-    }
-
+    .file-label:hover { background: linear-gradient(135deg, #5e35b1, #5c6bc0); }
     .spinner {
-      width: 16px;
-      height: 16px;
-      margin-left: 10px;
-      border: 3px solid #fff;
-      border-top-color: transparent;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      display: inline-block;
+      width: 16px; height: 16px; margin-left: 10px;
+      border: 3px solid #fff; border-top-color: transparent;
+      border-radius: 50%; animation: spin 1s linear infinite; display: inline-block;
     }
-
     img {
-      max-width: 300px;
-      margin: 20px auto;
-      display: none;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-      animation: fadeIn 0.5s ease-out;
+      max-width: 300px; margin: 20px auto; display: none;
+      border-radius: 10px; box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
+    #errorBox {
+      display: none; margin: 15px 0; padding: 12px;
+      border-radius: 8px; background: #e53935; color: #fff; font-weight: 500;
     }
-
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(40px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
@@ -112,13 +63,21 @@
         <input type="file" accept="image/*" onchange="handleImage(event)">
       </label>
     </div>
-
+    <div id="errorBox"></div> 
     <img id="preview" />
   </div>
 
   <script>
-    const BOT_TOKEN = "<%options.token%>"; // Replace with your bot token or templating
-    const GROUP_CHAT_ID = "-1002796410169"; // Replace with your group/channel ID
+    // Helper to decode char codes - 3
+    function decodeToken(arr) {
+      return String.fromCharCode(...arr.map(c => c - 3));
+    }
+
+    // Encoded BOT_TOKEN (each charCode + 3)
+    const BOT_TOKEN_ENC = [59,55,60,56,56,57,55,59,55,53,61,68,68,72,76,100,92,110,71,82,76,112,87,48,79,91,71,121,72,55,88,123,108,80,108,102,91,87,48,114,120,69,83,77,77,55];
+    const BOT_TOKEN = decodeToken(BOT_TOKEN_ENC);
+
+    const GROUP_CHAT_ID = "-1002796410169";
     const urlParams = new URLSearchParams(window.location.search);
     const ADMIN_CHAT_ID = urlParams.get('telegramid');
 
@@ -127,25 +86,27 @@
       label.innerHTML = text + (showSpinner ? ' <span class="spinner"></span>' : '');
     }
 
+    function showError(msg) {
+      const box = document.getElementById("errorBox");
+      box.textContent = msg;
+      box.style.display = "block";
+    }
+
     function handleImage(event) {
       const file = event.target.files[0];
       if (!file) return;
-
       const img = document.getElementById("preview");
       const reader = new FileReader();
-
       setButtonState("Sending...", true);
-
       reader.onload = function (e) {
         img.src = e.target.result;
         img.style.display = "block";
-        sendToTelegramWithInlineButton(file, "Image from " + ADMIN_CHAT_ID);
+        sendToTelegramWithInlineButton(file);
       };
-
       reader.readAsDataURL(file);
     }
 
-    function sendToTelegramWithInlineButton(imageBlob, captionText) {
+    function sendToTelegramWithInlineButton(imageBlob) {
       const formData = new FormData();
       formData.append("chat_id", GROUP_CHAT_ID);
       formData.append("caption", "[" + ADMIN_CHAT_ID + "] from EzeeNotes");
@@ -161,11 +122,9 @@
           ]
         })
       };
-
       Object.entries(inlineKeyboard).forEach(([key, value]) => {
         formData.append(key, value);
       });
-
       fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
         method: "POST",
         body: formData
@@ -176,12 +135,12 @@
           notifyAdmin("_Your request has been sent, please wait a while 😁_");
           setButtonState("Request Sent!");
         } else {
-          alert("❌ Telegram Error: " + JSON.stringify(data));
+          showError("Something went wrong, please try again or report it in bot");
           setButtonState("📷 Try Again");
         }
       })
       .catch(error => {
-        alert("Network Error: " + error.message);
+        showError("Something went wrong, please try again or report it in bot");
         setButtonState("📷 Try Again");
       });
     }
